@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: quickpoll-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quickpoll-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+      - key: ENVIRONMENT
+        value: production
+
+databases:
+  - name: quickpoll-db
+    plan: free
+    databaseName: quickpoll
+    user: quickpoll
